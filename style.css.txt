@@ -3,45 +3,49 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-/* CV preview styling */
+/* Style for the CV preview to mimic a real document */
 #cv-preview {
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
     transition: all 0.3s ease-in-out;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar for a cleaner look */
 ::-webkit-scrollbar {
     width: 8px;
 }
+
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-/* Accordion animation */
+/* Simple animation for accordion toggle */
 .accordion-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;
 }
+
 .accordion-content.open {
-    max-height: 1500px; /* Adjust for content */
+    max-height: 1500px; /* Increased for more content */
     transition: max-height 0.5s ease-in;
 }
 
-/* Preview text formatting */
+/* Ensure textareas in the preview don't break words unnaturally */
 .preview-text {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
 
-/* CV section title */
+/* Styles for the new CV template */
 .cv-section-title {
     font-weight: 600;
     font-size: 1.1rem;
@@ -49,5 +53,5 @@ body {
     color: #4A5568; /* gray-700 */
     margin-bottom: 0.75rem;
     padding-bottom: 0.25rem;
-    border-bottom: 2px solid #D19D5A; /* gold color */
+    border-bottom: 2px solid #D19D5A; /* A gold-like color from the image */
 }
