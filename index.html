@@ -4,18 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive CV Builder</title>
-    <!-- Tailwind CSS for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- html2pdf.js for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-100 text-gray-800">
+
     <div class="container mx-auto p-4 lg:p-8">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-700">CV Builder</h1>
@@ -23,22 +20,165 @@
         </header>
 
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Left Side: Input Form -->
+
             <div class="lg:w-1/2 bg-white p-6 rounded-lg shadow-lg">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold">Your Information</h2>
-                     <button id="download-pdf" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center gap-2">
+                    <button id="download-pdf" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Download PDF
                     </button>
                 </div>
 
-                <!-- Form Sections using Accordion -->
                 <div class="space-y-4" id="cv-form">
-                    <!-- All form sections here -->
-                    <!-- You can copy your HTML form sections for Personal Info, Summary, Skills, etc. from your original code -->
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Personal Information
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content open p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="full-name" placeholder="Full Name" class="p-2 border rounded-md w-full md:col-span-2">
+                            <input type="text" id="job-title-main" placeholder="Your Job Title (e.g., Process Engineer)" class="p-2 border rounded-md w-full md:col-span-2">
+                            <input type="email" id="email" placeholder="Email" class="p-2 border rounded-md w-full">
+                            <input type="tel" id="phone" placeholder="Phone Number" class="p-2 border rounded-md w-full">
+                            <input type="text" id="address" placeholder="Address, City" class="p-2 border rounded-md w-full md:col-span-2">
+                            <input type="text" id="website" placeholder="Website/Portfolio Link" class="p-2 border rounded-md w-full md:col-span-2">
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Summary
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content p-4">
+                            <textarea id="summary" placeholder="Write a brief summary about your professional background..." class="p-2 border rounded-md w-full h-24"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Skills
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <h3 class="font-semibold mb-2">Professional Skills</h3>
+                                    <div id="professional-skills-list"></div>
+                                    <button id="add-prof-skill" class="mt-2 text-blue-600 font-semibold hover:text-blue-800">+ Add Skill</button>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-2">Technical Skills</h3>
+                                    <div id="technical-skills-list"></div>
+                                    <button id="add-tech-skill" class="mt-2 text-blue-600 font-semibold hover:text-blue-800">+ Add Skill</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Professional Experience
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content p-4">
+                            <div id="work-experience-list"></div>
+                            <button id="add-experience" class="mt-2 text-blue-600 font-semibold hover:text-blue-800">+ Add Experience</button>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Projects
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content p-4">
+                            <div id="projects-list"></div>
+                            <button id="add-project" class="mt-2 text-blue-600 font-semibold hover:text-blue-800">+ Add Project</button>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Education
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content p-4">
+                            <div id="education-list"></div>
+                            <button id="add-education" class="mt-2 text-blue-600 font-semibold hover:text-blue-800">+ Add Education</button>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full text-left p-4 bg-gray-50 hover:bg-gray-100 font-semibold rounded-t-lg flex justify-between items-center">
+                            Additional Information
+                            <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content p-4">
+                             <div id="additional-info-list"></div>
+                            <button id="add-additional-info" class="mt-2 text-blue-600 font-semibold hover:text-blue-800">+ Add Info</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Side: CV Preview -->
-            <div class="lg:
+            <div class="lg:w-1/2">
+                <div id="cv-preview" class="bg-white p-10 rounded-lg min-h-[842px] aspect-[1/1.414]">
+                    <header class="text-center mb-6">
+                        <h1 id="preview-name" class="text-4xl font-bold tracking-wider text-gray-800">ESTELLE DARCY</h1>
+                        <h2 id="preview-job-title-main" class="text-xl font-medium text-gray-600 mt-1">PROCESS ENGINEER</h2>
+                        <div id="preview-contact" class="text-sm text-gray-500 mt-3 flex justify-center items-center flex-wrap gap-x-4 gap-y-1">
+                            <span id="preview-address">123 Anywhere St., Any City</span>
+                            <span id="preview-email">hello@reallygreatsite.com</span>
+                            <span id="preview-website">www.reallygreatsite.com</span>
+                        </div>
+                    </header>
+                    
+                    <main class="space-y-6">
+                        <section>
+                            <h3 class="cv-section-title">SUMMARY</h3>
+                            <p id="preview-summary" class="text-gray-700 text-sm preview-text">Practical Engineer with Significant Experience in Process Design...</p>
+                        </section>
+
+                        <section>
+                            <div class="grid grid-cols-2 gap-8">
+                                <div>
+                                    <h3 class="cv-section-title">PROFESSIONAL SKILLS</h3>
+                                    <div id="preview-prof-skills" class="text-sm text-gray-700 space-y-1"></div>
+                                </div>
+                                <div>
+                                    <h3 class="cv-section-title">TECHNICAL SKILLS</h3>
+                                    <div id="preview-tech-skills" class="text-sm text-gray-700 space-y-1"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <h3 class="cv-section-title">PROFESSIONAL EXPERIENCE</h3>
+                            <div id="preview-experience" class="space-y-4"></div>
+                        </section>
+                        
+                        <section>
+                            <h3 class="cv-section-title">PROJECTS</h3>
+                            <div id="preview-projects" class="space-y-4"></div>
+                        </section>
+
+                        <section>
+                            <h3 class="cv-section-title">EDUCATION</h3>
+                            <div id="preview-education" class="space-y-4"></div>
+                        </section>
+
+                        <section>
+                            <h3 class="cv-section-title">ADDITIONAL INFORMATION</h3>
+                            <ul id="preview-additional-info" class="list-disc list-inside text-gray-700 text-sm space-y-1"></ul>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
