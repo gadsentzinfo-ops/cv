@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Accordion functionality
+    // --- Accordion Functionality ---
     const accordions = document.querySelectorAll('.accordion-toggle');
     accordions.forEach(button => {
         button.addEventListener('click', () => {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Functions to create dynamic blocks (skills, experience, projects, etc.)
+    // --- Dynamic Section Templates ---
     const createRemoveButton = () => `<button class="remove-btn absolute top-2 right-2 text-red-500 hover:text-red-700 text-2xl font-bold">&times;</button>`;
 
     function createSkillBlock(placeholder) {
@@ -34,21 +34,191 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         return div;
     }
+    
+    function createProjectBlock() {
+        const div = document.createElement('div');
+        div.className = 'p-4 border rounded-md mb-4 relative';
+        div.innerHTML = `
+            <input type="text" placeholder="Project Name" class="p-2 border rounded-md w-full mb-2 font-semibold" data-type="project-name">
+            <input type="text" placeholder="Associated with (e.g., University)" class="p-2 border rounded-md w-full mb-2" data-type="project-assoc">
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <input type="text" placeholder="Start Date (e.g., Jan 2023)" class="p-2 border rounded-md w-full" data-type="start-date">
+                <input type="text" placeholder="End Date (e.g., Jun 2023)" class="p-2 border rounded-md w-full" data-type="end-date">
+            </div>
+            <textarea placeholder="Description (use '*' for bullet points)" class="p-2 border rounded-md w-full h-24" data-type="description"></textarea>
+            ${createRemoveButton()}
+        `;
+        return div;
+    }
 
-    // Add initial skill/experience blocks if needed
-    // document.getElementById('professional-skills-list').appendChild(createSkillBlock('Prototyping Tools'));
+    function createEducationBlock() {
+        const div = document.createElement('div');
+        div.className = 'p-4 border rounded-md mb-4 relative';
+        div.innerHTML = `
+            <input type="text" placeholder="Degree or Certificate" class="p-2 border rounded-md w-full mb-2 font-semibold" data-type="degree">
+            <input type="text" placeholder="Institution" class="p-2 border rounded-md w-full mb-2" data-type="institution">
+            <input type="text" placeholder="Date (e.g., Sep 2019 - Sep 2023)" class="p-2 border rounded-md w-full" data-type="date">
+            <textarea placeholder="Optional: Description or key courses" class="p-2 border rounded-md w-full h-16" data-type="description"></textarea>
+            ${createRemoveButton()}
+        `;
+        return div;
+    }
 
-    // PDF download functionality
+    function createAdditionalInfoBlock() {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-2 mb-2 relative';
+        div.innerHTML = `<input type="text" placeholder="e.g., Languages: English, French" class="p-2 border rounded-md w-full" data-type="info">${createRemoveButton()}`;
+        return div;
+    }
+
+    // --- Event Listeners for "Add" Buttons ---
+    document.getElementById('add-prof-skill').addEventListener('click', () => document.getElementById('professional-skills-list').appendChild(createSkillBlock('Prototyping Tools')));
+    document.getElementById('add-tech-skill').addEventListener('click', () => document.getElementById('technical-skills-list').appendChild(createSkillBlock('Accessibility')));
+    document.getElementById('add-experience').addEventListener('click', () => document.getElementById('work-experience-list').appendChild(createExperienceBlock()));
+    document.getElementById('add-project').addEventListener('click', () => document.getElementById('projects-list').appendChild(createProjectBlock()));
+    document.getElementById('add-education').addEventListener('click', () => document.getElementById('education-list').appendChild(createEducationBlock()));
+    document.getElementById('add-additional-info').addEventListener('click', () => document.getElementById('additional-info-list').appendChild(createAdditionalInfoBlock()));
+
+    // Add some initial blocks
+    document.getElementById('professional-skills-list').appendChild(createSkillBlock('Prototyping Tools'));
+    document.getElementById('technical-skills-list').appendChild(createSkillBlock('Accessibility'));
+    document.getElementById('work-experience-list').appendChild(createExperienceBlock());
+    document.getElementById('projects-list').appendChild(createProjectBlock());
+    document.getElementById('education-list').appendChild(createEducationBlock());
+    document.getElementById('additional-info-list').appendChild(createAdditionalInfoBlock());
+
+    // --- Live Preview Update Logic ---
+    const form = document.getElementById('cv-form');
+    form.addEventListener('input', updatePreview);
+    form.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+            e.target.parentElement.remove();
+            updatePreview();
+        }
+    });
+
+    function formatDescription(text) {
+        return text.split('*').map(line => line.trim()).filter(line => line).map(line => `<li>${line}</li>`).join('');
+    }
+
+    function updatePreview() {
+        // Personal Info
+        document.getElementById('preview-name').textContent = document.getElementById('full-name').value || 'ESTELLE DARCY';
+        document.getElementById('preview-job-title-main').textContent = document.getElementById('job-title-main').value || 'PROCESS ENGINEER';
+        document.getElementById('preview-email').textContent = document.getElementById('email').value || 'hello@reallygreatsite.com';
+        document.getElementById('preview-address').textContent = document.getElementById('address').value || '123 Anywhere St., Any City';
+        document.getElementById('preview-website').textContent = document.getElementById('website').value || 'www.reallygreatsite.com';
+
+        // Summary
+        document.getElementById('preview-summary').textContent = document.getElementById('summary').value || 'Practical Engineer with Significant Experience...';
+
+        // Skills
+        const profSkillsPreview = document.getElementById('preview-prof-skills');
+        profSkillsPreview.innerHTML = '';
+        document.querySelectorAll('#professional-skills-list [data-type="skill"]').forEach(input => {
+            if (input.value) profSkillsPreview.innerHTML += `<div>${input.value}</div>`;
+        });
+        const techSkillsPreview = document.getElementById('preview-tech-skills');
+        techSkillsPreview.innerHTML = '';
+        document.querySelectorAll('#technical-skills-list [data-type="skill"]').forEach(input => {
+            if (input.value) techSkillsPreview.innerHTML += `<div>${input.value}</div>`;
+        });
+
+        // Work Experience
+        const experiencePreview = document.getElementById('preview-experience');
+        experiencePreview.innerHTML = '';
+        document.querySelectorAll('#work-experience-list > div').forEach(block => {
+            const title = block.querySelector('[data-type="job-title"]').value;
+            const company = block.querySelector('[data-type="company"]').value;
+            const startDate = block.querySelector('[data-type="start-date"]').value;
+            const endDate = block.querySelector('[data-type="end-date"]').value;
+            const description = block.querySelector('[data-type="description"]').value;
+
+            if (title || company) {
+                experiencePreview.innerHTML += `
+                    <div class="text-sm">
+                        <div class="flex justify-between items-baseline">
+                            <h4 class="font-semibold text-base">${title || 'Job Title'}</h4>
+                            <span class="text-xs font-medium text-gray-600">${startDate} - ${endDate}</span>
+                        </div>
+                        <p class="font-medium text-gray-700">${company || 'Company, Location'}</p>
+                        <ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">${formatDescription(description)}</ul>
+                    </div>`;
+            }
+        });
+
+        // Projects
+        const projectsPreview = document.getElementById('preview-projects');
+        projectsPreview.innerHTML = '';
+        document.querySelectorAll('#projects-list > div').forEach(block => {
+            const name = block.querySelector('[data-type="project-name"]').value;
+            const assoc = block.querySelector('[data-type="project-assoc"]').value;
+            const startDate = block.querySelector('[data-type="start-date"]').value;
+            const endDate = block.querySelector('[data-type="end-date"]').value;
+            const description = block.querySelector('[data-type="description"]').value;
+
+            if (name || assoc) {
+                projectsPreview.innerHTML += `
+                    <div class="text-sm">
+                        <div class="flex justify-between items-baseline">
+                            <h4 class="font-semibold text-base">${name || 'Project Name'}</h4>
+                            <span class="text-xs font-medium text-gray-600">${startDate} - ${endDate}</span>
+                        </div>
+                        <p class="font-medium text-gray-700">${assoc || 'Associated with'}</p>
+                        <ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">${formatDescription(description)}</ul>
+                    </div>`;
+            }
+        });
+
+        // Education
+        const educationPreview = document.getElementById('preview-education');
+        educationPreview.innerHTML = '';
+        document.querySelectorAll('#education-list > div').forEach(block => {
+            const degree = block.querySelector('[data-type="degree"]').value;
+            const institution = block.querySelector('[data-type="institution"]').value;
+            const date = block.querySelector('[data-type="date"]').value;
+            const description = block.querySelector('[data-type="description"]').value;
+
+            if (degree || institution) {
+                educationPreview.innerHTML += `
+                    <div class="text-sm">
+                        <div class="flex justify-between items-baseline">
+                            <h4 class="font-semibold text-base">${degree || 'Degree'}</h4>
+                            <span class="text-xs font-medium text-gray-600">${date}</span>
+                        </div>
+                        <p class="font-medium text-gray-700">${institution || 'Institution'}</p>
+                        <p class="text-gray-600 mt-1 preview-text">${description}</p>
+                    </div>`;
+            }
+        });
+        
+        // Additional Info
+        const additionalInfoPreview = document.getElementById('preview-additional-info');
+        additionalInfoPreview.innerHTML = '';
+        document.querySelectorAll('#additional-info-list [data-type="info"]').forEach(input => {
+            if (input.value) {
+                const parts = input.value.split(':');
+                const label = parts[0] ? `<span class="font-semibold">${parts[0]}:</span>` : '';
+                const value = parts[1] || '';
+                additionalInfoPreview.innerHTML += `<li>${label} ${value.trim()}</li>`;
+            }
+        });
+    }
+
+    // --- PDF Download Functionality ---
     document.getElementById('download-pdf').addEventListener('click', () => {
         const previewElement = document.getElementById('cv-preview');
         const fullName = document.getElementById('full-name').value || 'CV';
         const opt = {
-            margin: 0,
-            filename: `${fullName.replace(/\s+/g, '_')}_CV.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, useCORS: true, letterRendering: true },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            margin:       0,
+            filename:     `${fullName.replace(/\s+/g, '_')}_CV.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 3, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().from(previewElement).set(opt).save();
     });
+    
+    // Initial call to populate the preview
+    updatePreview();
 });
