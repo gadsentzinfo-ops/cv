@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern CV Builder</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #f3f4f6;
+        }
+        /* Style for the A4-like CV preview */
+        #cv-preview {
+            width: 210mm;
+            min-height: 297mm;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: #ffffff;
+            padding: 40px 50px;
+        }
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .hide-on-print {
+                display: none;
+            }
+        }
+        .section-title {
+            font-size: 1.5rem; /* Equivalent to text-2xl */
+            font-weight: bold;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: #000;
+            margin-top: 0.25rem;
+        }
+        .text-blue {
+            color: #4b8dbe; /* A light blue accent color */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8 flex flex-col items-center">
+    <!-- Main Application Container -->
+    <div class="w-full max-w-7xl">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Input Form Section -->
+            <div class="w-full lg:w-1/2 p-6 bg-white rounded-xl shadow-lg hide-on-print">
+                <h1 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-4">CV Builder</h1>
+                <form id="cv-form" class="space-y-6">
+                    <!-- Personal Details -->
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Personal Details</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" id="name" placeholder="YOUR NAME" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="role" class="block text-sm font-medium text-gray-700">Role you are applying for</label>
+                                <input type="text" id="role" placeholder="e.g., Software Engineer" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                                <input type="tel" id="phone" placeholder="(123) 456-7890" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" placeholder="john.doe@example.com" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="linkedin" class="block text-sm font-medium text-gray-700">LinkedIn / Portfolio</label>
+                                <input type="text" id="linkedin" placeholder="linkedin.com/in/johndoe" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Summary</h2>
+                        <textarea id="summary" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border" placeholder="Briefly explain why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting."></textarea>
+                    </div>
+
+                    <!-- Work Experience -->
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Experience</h2>
+                        <div id="work-experience-container" class="space-y-4">
+                            <!-- Work Experience Item Template -->
+                            <div class="work-experience-item space-y-2 p-4 border rounded-md bg-gray-50">
+                                <input type="text" data-field="job-title" placeholder="Title" class="block w-full p-2 border rounded-md text-lg font-medium">
+                                <input type="text" data-field="company" placeholder="Company Name" class="block w-full p-2 border rounded-md text-base">
+                                <input type="text" data-field="dates" placeholder="Date period" class="block w-full p-2 border rounded-md text-sm">
+                                <input type="text" data-field="location" placeholder="Location" class="block w-full p-2 border rounded-md text-sm text-gray-600">
+                                <textarea data-field="description" rows="3" class="block w-full p-2 border rounded-md text-sm" placeholder="Company Description"></textarea>
+                                <textarea data-field="accomplishments" rows="3" class="block w-full p-2 border rounded-md text-sm" placeholder="Highlight your accomplishments, using numbers if possible. Use a new line for each bullet point."></textarea>
+                                <button type="button" onclick="removeSection(this, 'work')" class="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addSection('work')" class="mt-4 px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition">Add Experience</button>
+                    </div>
+
+                    <!-- Education -->
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Education</h2>
+                        <div id="education-container" class="space-y-4">
+                            <!-- Education Item Template -->
+                            <div class="education-item space-y-2 p-4 border rounded-md bg-gray-50">
+                                <input type="text" data-field="degree" placeholder="Degree and Field of Study" class="block w-full p-2 border rounded-md text-lg font-medium">
+                                <input type="text" data-field="school" placeholder="School or University" class="block w-full p-2 border rounded-md text-base text-blue">
+                                <input type="text" data-field="dates" placeholder="Date period" class="block w-full p-2 border rounded-md text-sm">
+                                <button type="button" onclick="removeSection(this, 'education')" class="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addSection('education')" class="mt-4 px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition">Add Education</button>
+                    </div>
+
+                    <!-- Skills -->
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Skills</h2>
+                        <textarea id="skills" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border" placeholder="Your Skill. Use a new line for each skill."></textarea>
+                    </div>
+
+                    <!-- Strengths -->
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Strengths</h2>
+                        <textarea id="strengths" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border" placeholder="Your Strength. Explain how it benefits your work. Use a new line for each strength."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- CV Preview and Controls -->
+            <div class="w-full lg:w-1/2 flex flex-col items-center">
+                <div id="cv-preview-container" class="w-full">
+                    <!-- CV Preview Area -->
+                    <div id="cv-preview" class="p-8 border rounded-xl shadow-lg bg-white overflow-y-auto">
+                        <!-- This content will be dynamically updated by JavaScript -->
+                        <div id="preview-header">
+                            <h1 id="preview-name" class="text-4xl font-bold text-gray-800 uppercase">YOUR NAME</h1>
+                            <p id="preview-role" class="text-gray-800 text-lg text-blue">The role you are applying for?</p>
+                            <div class="flex items-center text-sm text-gray-600 mt-2 space-x-4" id="preview-contact">
+                                <!-- Icons will be dynamically inserted here -->
+                            </div>
+                        </div>
+
+                        <div id="preview-summary">
+                            <h2 class="section-title">SUMMARY</h2>
+                            <p class="text-gray-800">Briefly explain why you're a great fit for the role - use the AI assistant to tailor this summary for each job posting.</p>
+                        </div>
+
+                        <div id="preview-experience">
+                            <h2 class="section-title">EXPERIENCE</h2>
+                            <div id="preview-work-list" class="space-y-4">
+                                <!-- Placeholder Work Item -->
+                                <div class="work-item">
+                                    <h3 class="text-lg font-bold text-gray-800">Title</h3>
+                                    <p class="text-blue text-sm font-medium">Company Name</p>
+                                    <div class="flex items-center text-sm text-gray-600 space-x-4 mt-1">
+                                        <span class="flex items-center space-x-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="dates">Date period</span>
+                                        </span>
+                                        <span class="flex items-center space-x-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="location">Location</span>
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-800 mt-2">Company Description</p>
+                                    <ul class="list-disc list-inside text-gray-800 mt-1">
+                                        <li>Highlight your accomplishments, using numbers if possible.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="preview-education">
+                            <h2 class="section-title">EDUCATION</h2>
+                            <div id="preview-education-list" class="space-y-4">
+                                <!-- Placeholder Education Item -->
+                                <div class="education-item">
+                                    <h3 class="text-lg font-bold text-gray-800">Degree and Field of Study</h3>
+                                    <p class="text-blue text-sm font-medium">School or University</p>
+                                    <div class="flex items-center text-sm text-gray-600 space-x-4 mt-1">
+                                        <span class="flex items-center space-x-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="dates">Date period</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="preview-skills">
+                            <h2 class="section-title">SKILLS</h2>
+                            <p class="text-gray-800">Your Skill</p>
+                        </div>
+
+                        <div id="preview-strengths">
+                            <h2 class="section-title">STRENGTHS</h2>
+                            <p class="text-gray-800">Your Strength<br>Explain how it benefits your work.</p>
+                        </div>
+                    </div>
+
+                    <!-- Save PDF Button -->
+                    <button id="save-pdf-btn" class="w-full mt-4 px-6 py-3 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 transition-colors transform hover:scale-105 hide-on-print">
+                        Save as PDF
+                    </button>
+                    <div id="loading-indicator" class="hidden text-center text-gray-500 mt-2">Generating PDF...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF and html2canvas Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        // --- DOM Elements ---
+        const form = document.getElementById('cv-form');
+        const cvPreview = document.getElementById('cv-preview');
+        const savePdfBtn = document.getElementById('save-pdf-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // --- Helper functions for SVGs ---
+        function getPhoneIcon() {
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.261 1.488a7.669 7.669 0 004.972 4.972l1.488-2.261a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>`;
+        }
+        function getEmailIcon() {
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-9 6l9-5.26A2 2 0 0021 6H3a2 2 0 00-2 2v10a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-1-1.74L12 14z" /></svg>`;
+        }
+        function getLinkedinIcon() {
+            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4 text-gray-500" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>`;
+        }
+
+        // --- Dynamic UI Functions ---
+        // Function to add a new section (Work or Education)
+        function addSection(type) {
+            const container = document.getElementById(`${type}-container`);
+            const templateHtml = type === 'work'
+                ? `<div class="work-experience-item space-y-2 p-4 border rounded-md bg-gray-50"><input type="text" data-field="job-title" placeholder="Title" class="block w-full p-2 border rounded-md text-lg font-medium"><input type="text" data-field="company" placeholder="Company Name" class="block w-full p-2 border rounded-md text-base"><input type="text" data-field="dates" placeholder="Date period" class="block w-full p-2 border rounded-md text-sm"><input type="text" data-field="location" placeholder="Location" class="block w-full p-2 border rounded-md text-sm text-gray-600"><textarea data-field="description" rows="3" class="block w-full p-2 border rounded-md text-sm" placeholder="Company Description"></textarea><textarea data-field="accomplishments" rows="3" class="block w-full p-2 border rounded-md text-sm" placeholder="Highlight your accomplishments, using numbers if possible. Use a new line for each bullet point."></textarea><button type="button" onclick="removeSection(this, 'work')" class="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button></div>`
+                : `<div class="education-item space-y-2 p-4 border rounded-md bg-gray-50"><input type="text" data-field="degree" placeholder="Degree and Field of Study" class="block w-full p-2 border rounded-md text-lg font-medium"><input type="text" data-field="school" placeholder="School or University" class="block w-full p-2 border rounded-md text-base text-blue"><input type="text" data-field="dates" placeholder="Date period" class="block w-full p-2 border rounded-md text-sm"><button type="button" onclick="removeSection(this, 'education')" class="text-red-500 hover:text-red-700 text-sm font-medium">Remove</button></div>`;
+            const newSection = document.createElement('div');
+            newSection.innerHTML = templateHtml;
+            container.appendChild(newSection.firstElementChild);
+            updatePreview();
+        }
+
+        // Function to remove a section (Work or Education)
+        function removeSection(button, type) {
+            button.closest(`.${type}-item`).remove();
+            updatePreview();
+        }
+
+        // --- Core Logic ---
+        // Function to update the CV preview based on form data
+        function updatePreview() {
+            // Personal details
+            document.getElementById('preview-name').textContent = form.name.value.toUpperCase() || 'YOUR NAME';
+            document.getElementById('preview-role').textContent = form.role.value || 'The role you are applying for?';
+            const contactHtml = [];
+            if (form.phone.value) contactHtml.push(`<span class="flex items-center space-x-1">${getPhoneIcon()}<span>${form.phone.value}</span></span>`);
+            if (form.email.value) contactHtml.push(`<span class="flex items-center space-x-1">${getEmailIcon()}<span>${form.email.value}</span></span>`);
+            if (form.linkedin.value) contactHtml.push(`<span class="flex items-center space-x-1">${getLinkedinIcon()}<span>${form.linkedin.value}</span></span>`);
+            document.getElementById('preview-contact').innerHTML = contactHtml.join('');
+
+            // Summary
+            document.getElementById('preview-summary').querySelector('p').textContent = form.summary.value || 'Briefly explain why you\'re a great fit for the role - use the AI assistant to tailor this summary for each job posting.';
+
+            // Work Experience
+            const workList = document.getElementById('preview-work-list');
+            workList.innerHTML = '';
+            const workItems = document.querySelectorAll('.work-experience-item');
+            workItems.forEach(item => {
+                const jobTitle = item.querySelector('[data-field="job-title"]').value;
+                const company = item.querySelector('[data-field="company"]').value;
+                const dates = item.querySelector('[data-field="dates"]').value;
+                const location = item.querySelector('[data-field="location"]').value;
+                const description = item.querySelector('[data-field="description"]').value;
+                const accomplishments = item.querySelector('[data-field="accomplishments"]').value;
+                if (jobTitle || company) {
+                    const accomplishmentsHtml = accomplishments.split('\n').filter(line => line.trim() !== '').map(line => `<li>${line}</li>`).join('');
+                    const workHtml = `<div class="work-item"><h3 class="text-lg font-bold text-gray-800">${jobTitle || 'Title'}</h3><p class="text-blue text-sm font-medium">${company || 'Company Name'}</p><div class="flex items-center text-sm text-gray-600 space-x-4 mt-1"><span class="flex items-center space-x-1">${getCalendarIcon()}<span>${dates || 'Date period'}</span></span><span class="flex items-center space-x-1">${getLocationIcon()}<span>${location || 'Location'}</span></span></div><p class="text-sm text-gray-800 mt-2">${description || 'Company Description'}</p>${accomplishmentsHtml ? `<ul class="list-disc list-inside text-gray-800 mt-1">${accomplishmentsHtml}</ul>` : ''}</div>`;
+                    workList.innerHTML += workHtml;
+                }
+            });
+
+            // Education
+            const educationList = document.getElementById('preview-education-list');
+            educationList.innerHTML = '';
+            const educationItems = document.querySelectorAll('.education-item');
+            educationItems.forEach(item => {
+                const degree = item.querySelector('[data-field="degree"]').value;
+                const school = item.querySelector('[data-field="school"]').value;
+                const dates = item.querySelector('[data-field="dates"]').value;
+                if (degree || school) {
+                    const educationHtml = `<div class="education-item"><h3 class="text-lg font-bold text-gray-800">${degree || 'Degree and Field of Study'}</h3><p class="text-blue text-sm font-medium">${school || 'School or University'}</p><div class="flex items-center text-sm text-gray-600 space-x-4 mt-1"><span class="flex items-center space-x-1">${getCalendarIcon()}<span>${dates || 'Date period'}</span></span></div></div>`;
+                    educationList.innerHTML += educationHtml;
+                }
+            });
+
+            // Skills
+            const skillsText = form.skills.value || 'Your Skill';
+            document.getElementById('preview-skills').querySelector('p').textContent = skillsText.replace(/\n/g, ', ');
+
+            // Strengths
+            const strengthsText = form.strengths.value || 'Your Strength\nExplain how it benefits your work.';
+            document.getElementById('preview-strengths').querySelector('p').innerHTML = strengthsText.replace(/\n/g, '<br>');
+        }
+
+        // Function to save the CV as a PDF
+        async function saveAsPdf() {
+            savePdfBtn.disabled = true;
+            loadingIndicator.classList.remove('hidden');
+            const scaleFactor = 3; // Increase scale for better quality
+            const options = {
+                scale: scaleFactor,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            };
+            try {
+                const canvas = await html2canvas(cvPreview, options);
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'pt', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                let position = 0;
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                let remainingHeight = imgProps.height;
+                const pageHeight = imgProps.width * (pdf.internal.pageSize.getHeight() / pdf.internal.pageSize.getWidth());
+                while (remainingHeight > pageHeight) {
+                    pdf.addPage();
+                    position -= pageHeight;
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    remainingHeight -= pageHeight;
+                }
+                pdf.save('my-cv.pdf');
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                const messageBox = document.createElement('div');
+                messageBox.classList.add('fixed', 'top-1/2', 'left-1/2', '-translate-x-1/2', '-translate-y-1/2', 'bg-red-500', 'text-white', 'p-4', 'rounded-md', 'shadow-lg');
+                messageBox.textContent = "An error occurred while generating the PDF. Please try again.";
+                document.body.appendChild(messageBox);
+                setTimeout(() => messageBox.remove(), 5000);
+            } finally {
+                savePdfBtn.disabled = false;
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+        
+        // --- Event Listeners ---
+        form.addEventListener('input', updatePreview);
+        savePdfBtn.addEventListener('click', saveAsPdf);
+        document.addEventListener('DOMContentLoaded', updatePreview);
+
+        // Placeholder functions for icons not present in the original code
+        function getCalendarIcon() {
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>`;
+        }
+        function getLocationIcon() {
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>`;
+        }
+    </script>
+</body>
+</html>
